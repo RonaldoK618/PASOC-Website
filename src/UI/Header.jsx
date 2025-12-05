@@ -1,5 +1,7 @@
 "use client";
 import * as React from "react";
+import { useState } from "react";
+import { Link } from 'react-router-dom';
 
 export function Header() {
   const [hoveredNav, setHoveredNav] = React.useState(null);
@@ -121,13 +123,14 @@ export function Header() {
         </div>
 
         <nav style={styles.nav}>
-          <div 
+          <Link
+            to="/"
             style={styles.navItem(hoveredNav === "home")}
             onMouseEnter={() => setHoveredNav("home")}
             onMouseLeave={() => setHoveredNav(null)}
           >
             Home
-          </div>
+          </Link>
           <div 
             style={styles.navItem(hoveredNav === "motion")}
             onMouseEnter={() => setHoveredNav("motion")}
@@ -156,13 +159,14 @@ export function Header() {
           >
             About Us
           </div>
-          <div 
+          <Link  
+            to="./Pages/Donate"
             style={styles.navItem(hoveredNav === "donate")}
             onMouseEnter={() => setHoveredNav("donate")}
             onMouseLeave={() => setHoveredNav(null)}
           >
             Donate
-          </div>
+          </Link>
         </nav>
       </div>
     </header>
