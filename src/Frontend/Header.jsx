@@ -114,6 +114,16 @@ export function Header() {
     window.location.href = "/";
   };
 
+  const handleHomeClick = (e) => {
+    e.preventDefault();
+    window.location.href = "/";
+  };
+
+  const handleNavClick = (path) => (e) => {
+    e.preventDefault();
+    window.location.href = path;
+  };
+
   return (
     <header style={styles.header}>
       <div style={styles.container}>
@@ -160,13 +170,15 @@ export function Header() {
         </div>
 
         <nav style={styles.nav}>
-          <div
+          <a
+            href="/"
+            onClick={handleHomeClick}
             style={styles.navItem(hoveredNav === "home")}
             onMouseEnter={() => setHoveredNav("home")}
             onMouseLeave={() => setHoveredNav(null)}
           >
             Home
-          </div>
+          </a>
           <div
             style={styles.navItem(hoveredNav === "motion")}
             onMouseEnter={() => setHoveredNav("motion")}
