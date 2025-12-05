@@ -62,9 +62,20 @@ export function Header() {
       border: "2px solid #3f3f46",
       background: "#e5e7eb",
       width: 350,
-      cursor:"pointer",
+      cursor: "pointer",
     },
-    profile: { width: 40, height: 40, objectFit: "contain", marginRight: 20 },
+    profile: { 
+      width: 40, 
+      height: 40, 
+      objectFit: "contain", 
+      marginRight: 20,
+      cursor: "pointer",
+      transition: "transform 0.2s ease",
+    },
+    profileLink: {
+      display: "inline-block",
+      textDecoration: "none",
+    },
     nav: {
       display: "flex",
       flexWrap: "wrap",
@@ -83,7 +94,24 @@ export function Header() {
       backgroundColor: isHovered ? "#556B2F" : "transparent",
       color: isHovered ? "#FFFFFF" : "#556B2F",
       transition: "all 0.2s ease",
+      textDecoration: "none",
+      display: "block",
     }),
+  };
+
+  const handleDonateClick = (e) => {
+    e.preventDefault();
+    window.location.href = "/donate";
+  };
+
+  const handleLoginClick = (e) => {
+    e.preventDefault();
+    window.location.href = "/login";
+  };
+
+  const handleLogoClick = (e) => {
+    e.preventDefault();
+    window.location.href = "/";
   };
 
   return (
@@ -92,11 +120,13 @@ export function Header() {
         <div style={styles.topRow}>
           <div style={styles.brandRow}>
             <div style={{ width: "100%", maxWidth: 167 }}>
-              <img
-                src="https://api.builder.io/api/v1/image/assets/TEMP/59857bbe636f97ab4cebcfbc3ad030ee40910eb4?placeholderIfAbsent=true&apiKey=fbbee8c7a138402fba2a2964fb2f753d"
-                alt="PASOC Logo"
-                style={styles.logo}
-              />
+              <a href="/" onClick={handleLogoClick} style={{ textDecoration: "none" }}>
+                <img
+                  src="https://api.builder.io/api/v1/image/assets/TEMP/59857bbe636f97ab4cebcfbc3ad030ee40910eb4?placeholderIfAbsent=true&apiKey=fbbee8c7a138402fba2a2964fb2f753d"
+                  alt="PASOC Logo"
+                  style={styles.logo}
+                />
+              </a>
             </div>
             <div style={{ marginLeft: 12 }}>
               <h1 style={styles.title}>Pangasinan Society of Calgary</h1>
@@ -112,57 +142,68 @@ export function Header() {
               />
               <span>Search PASOC</span>
             </div>
-            <img
-              src="https://api.builder.io/api/v1/image/assets/TEMP/a97a9aea0d43bd1371ad3d9d7eba97da549becf9?placeholderIfAbsent=true&apiKey=fbbee8c7a138402fba2a2964fb2f753d"
-              alt="User profile"
-              style={styles.profile}
-            />
+            <a 
+              href="/login" 
+              onClick={handleLoginClick}
+              style={styles.profileLink}
+              title="Login"
+              onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.1)"}
+              onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
+            >
+              <img
+                src="https://api.builder.io/api/v1/image/assets/TEMP/a97a9aea0d43bd1371ad3d9d7eba97da549becf9?placeholderIfAbsent=true&apiKey=fbbee8c7a138402fba2a2964fb2f753d"
+                alt="User profile"
+                style={styles.profile}
+              />
+            </a>
           </div>
         </div>
 
         <nav style={styles.nav}>
-          <div 
+          <div
             style={styles.navItem(hoveredNav === "home")}
             onMouseEnter={() => setHoveredNav("home")}
             onMouseLeave={() => setHoveredNav(null)}
           >
             Home
           </div>
-          <div 
+          <div
             style={styles.navItem(hoveredNav === "motion")}
             onMouseEnter={() => setHoveredNav("motion")}
             onMouseLeave={() => setHoveredNav(null)}
           >
             PASOC in Motion
           </div>
-          <div 
+          <div
             style={styles.navItem(hoveredNav === "news")}
             onMouseEnter={() => setHoveredNav("news")}
             onMouseLeave={() => setHoveredNav(null)}
           >
             News
           </div>
-          <div 
+          <div
             style={styles.navItem(hoveredNav === "events")}
             onMouseEnter={() => setHoveredNav("events")}
             onMouseLeave={() => setHoveredNav(null)}
           >
             Events
           </div>
-          <div 
+          <div
             style={styles.navItem(hoveredNav === "about")}
             onMouseEnter={() => setHoveredNav("about")}
             onMouseLeave={() => setHoveredNav(null)}
           >
             About Us
           </div>
-          <div 
+          <a
+            href="/donate"
+            onClick={handleDonateClick}
             style={styles.navItem(hoveredNav === "donate")}
             onMouseEnter={() => setHoveredNav("donate")}
             onMouseLeave={() => setHoveredNav(null)}
           >
             Donate
-          </div>
+          </a>
         </nav>
       </div>
     </header>
