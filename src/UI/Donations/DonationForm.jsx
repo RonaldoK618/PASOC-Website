@@ -1,7 +1,15 @@
 import { useState } from "react";
 
-export function DonationForm() {
+export default function DonationForm() {
   const donationAmounts = [5, 10, 20, 50, 100, 150];
+
+  const paymentMethods = [
+    { id: "paypal", label: "PayPal", logo: "https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" },
+    { id: "visa", label: "Visa", logo: "https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png" },
+    { id: "mastercard", label: "MasterCard", logo: "https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png" },
+    { id: "amex", label: "American Express", logo: "https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo.svg" },
+    { id: "interac", label: "Interac", logo: "https://upload.wikimedia.org/wikipedia/commons/9/92/Interac_Brand_2021.png" }
+  ];
 
   const [formData, setFormData] = useState({
     customDonation: "",
@@ -19,7 +27,8 @@ export function DonationForm() {
     postalCode: "",
     province: "",
     country: "",
-    cellNumber: ""
+    cellNumber: "",
+    paymentMethod: "paypal"
   });
 
   const [errors, setErrors] = useState({});
@@ -27,6 +36,10 @@ export function DonationForm() {
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handlePaymentMethodChange = (id) => {
+    setFormData((prev) => ({ ...prev, paymentMethod: id }));
   };
 
   const validate = () => {
@@ -90,21 +103,36 @@ export function DonationForm() {
     }
   };
 
-  const inputStyle = {
-    padding: "8px",
-    fontSize: "16px",
-    width: "100%",
-    boxSizing: "border-box"
-  };
+  const inputStyle = { padding: "8px", fontSize: "16px", width: "100%", boxSizing: "border-box" };
 
   const rowStyle = { display: "flex", gap: "10px", marginTop: "12px" };
   const halfStyle = { flex: 1, minWidth: 0 };
 
+  const paymentMethodContainer = {
+    marginTop: "30px",
+    padding: "10px",
+    border: "1px solid #556B2F",
+    borderRadius: "8px",
+    maxWidth: "800px",
+    marginLeft: "auto",
+    marginRight: "auto"
+  };
+
+  const paymentOptionStyle = (selected) => ({
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    padding: "8px 12px",
+    borderRadius: "6px",
+    cursor: "pointer",
+    border: selected ? "2px solid #556B2F" : "1px solid #ccc",
+    backgroundColor: selected ? "#E6F0D4" : "transparent"
+  });
+
+  const logoStyle = { width: "40px", height: "auto" };
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}
-    >
+    <form onSubmit={handleSubmit} style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
       <h2 style={{ color: "#556B2F" }}>Enter Your Donation</h2>
       <p>Choose from the pre-selected amount or enter the amount you would like to donate</p>
 
@@ -133,6 +161,41 @@ export function DonationForm() {
           placeholder="0"
         />
         <p>.00</p>
+      </div>
+
+      <h2 style={{ color: "#556B2F", marginTop: "30px" }}>Payment Method</h2>
+      <div style={paymentMethodContainer} role="radiogroup" aria-label="Payment Method">
+        {paymentMethods.map(({ id, label, logo }) => {
+          const selected = formData.paymentMethod === id;
+          return (
+            <div
+              key={id}
+              style={paymentOptionStyle(selected)}
+              onClick={() => handlePaymentMethodChange(id)}
+              role="radio"
+              aria-checked={selected}
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === " " || e.key === "Enter") {
+                  e.preventDefault();
+                  handlePaymentMethodChange(id);
+                }
+              }}
+            >
+              <input
+                type="radio"
+                id={id}
+                name="paymentMethod"
+                checked={selected}
+                onChange={() => handlePaymentMethodChange(id)}
+                style={{ cursor: "pointer" }}
+              />
+              <label htmlFor={id} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "10px", margin: 0 }}>
+                <img src={logo} alt={label} style={logoStyle} /> {label}
+              </label>
+            </div>
+          );
+        })}
       </div>
 
       <h2 style={{ color: "#556B2F", marginTop: "30px" }}>Enter Your Information</h2>
@@ -328,13 +391,12 @@ export function DonationForm() {
         {errors.cellNumber && <span style={{ color: "red" }}>{errors.cellNumber}</span>}
       </div>
 
-        <h2 style={{ fontWeight: "bold", marginTop: "20px", textAlign: "center" }}>
-            Total Donation: ${formData.customDonation || 0}.00
-        </h2>
-
+      <p style={{ fontSize: "18px", fontWeight: "bold", marginTop: "20px", textAlign: "center" }}>
+        Total Donation: ${formData.customDonation || 0}.00
+      </p>
       <button
         type="submit"
-        style={{ marginTop: "20px", padding: "10px 20px", fontSize: "16px" }}
+        style={{ marginTop: "10px", padding: "10px 20px", fontSize: "16px" }}
       >
         Donate
       </button>

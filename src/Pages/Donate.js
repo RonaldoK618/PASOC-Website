@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { DonationForm } from "../UI/Donations/DonationForm";
+import DonationForm from "../UI/Donations/DonationForm";
 
 
 function Donate() {
