@@ -7,6 +7,8 @@ import { NewsSection } from "./Frontend/Home/NewsSection";
 import { ScholarsSection } from "./Frontend/Home/ScholarsSection";
 import { GallerySection } from "./Frontend/Home/GallerySection";
 import { FloatingButton } from "./Frontend/FloatingButton";
+import './App.css';
+
 
 function App() {
   return (
