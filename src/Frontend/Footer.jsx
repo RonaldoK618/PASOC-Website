@@ -12,7 +12,7 @@ export function Footer() {
       maxWidth: 1920,
       fontWeight: 700,
       color: "#fff",
-      backgroundColor: "#84A44D",
+      backgroundColor: "#556B2F",
       boxShadow: "0px -10px 10px rgba(0,0,0,0.25)",
     },
     inner: { display: "flex", gap: 16, justifyContent: "space-between", width: "100%", maxWidth: 1120, margin: "0 auto", alignItems: "center" },

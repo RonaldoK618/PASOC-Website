@@ -4,7 +4,7 @@ import { ScholarCard } from "./ScholarCard";
 export function ScholarsSection() {
   const scholarImageUrl = "https://api.builder.io/api/v1/image/assets/TEMP/6da362f7a787ec4fd6ab0ecc61c5d82a44859d9b?placeholderIfAbsent=true&apiKey=fbbee8c7a138402fba2a2964fb2f753d";
   const styles = {
-    section: { padding: "0 6.75vw" },
+    section: { padding: "0 6.75vw", maxWidth: 1350, marginLeft: "auto", marginRight: "auto" },
     titleBar: {
       display: "flex",
       gap: 16,
@@ -19,17 +19,14 @@ export function ScholarsSection() {
       fontWeight: 700,
       color: "#000",
     },
-    article: { padding: "16px", paddingTop: 20, paddingBottom: 32, marginTop: 8, borderBottom: "3px solid #000", borderRadius: 24, width: "100%", maxWidth: 1120, marginLeft: "auto", marginRight: "auto" },
+    article: { padding: "16px", paddingTop: 20, paddingBottom: 32, marginTop: 8, borderBottom: "3px solid #000", borderRadius: 24, width: "100%", maxWidth: 1350, marginLeft: "auto", marginRight: "auto" },
     row: { display: "flex", gap: 16, flexWrap: "wrap" },
     mainCol: { flex: "4 1 60%", minWidth: 300 },
     sideCol: { flex: "1 1 25%", minWidth: 200 },
-    heading: { fontSize: 28, color: "#84A44D", textDecoration: "underline", margin: 0 },
+    heading: { fontSize: 28, color: "#556B2F", textDecoration: "underline", margin: 0, fontFamily: "'Instrument Serif', serif", },
     paragraph: { marginTop: 14, fontSize: 18, color: "#000" },
     cards: { display: "flex", flexWrap: "wrap", gap: 12, marginTop: 24 },
-    sideCardWrap: { display: "flex", justifyContent: "flex-end" },
-    sideCard: { background: "#fff", padding: 16, width: 214, boxSizing: "border-box" },
-    sideImg: { width: "100%", objectFit: "contain" },
-    infoBox: { display: "flex", flexDirection: "column", justifyContent: "center", padding: 16, marginTop: 32, borderBottom: "3px solid #000", borderRadius: 12, maxWidth: 1120, marginLeft: "auto", marginRight: "auto", fontSize: 18, color: "#000" },
+    infoBox: { display: "flex", flexDirection: "column", justifyContent: "center", padding: 16, marginTop: 32, borderBottom: "3px solid #000", borderRadius: 12, maxWidth: 1350, marginLeft: "auto", marginRight: "auto", fontSize: 18, color: "#000" },
   };
 
   return (
@@ -52,15 +49,7 @@ export function ScholarsSection() {
                 <ScholarCard name="Scholar Name" imageUrl={scholarImageUrl} />
                 <ScholarCard name="Scholar Name" imageUrl={scholarImageUrl} />
                 <ScholarCard name="Scholar Name" imageUrl={scholarImageUrl} />
-              </div>
-            </div>
-          </div>
-
-          <div style={styles.sideCol}>
-            <div style={styles.sideCardWrap}>
-              <div style={styles.sideCard}>
-                <img src={scholarImageUrl} alt="Scholar photo" style={styles.sideImg} />
-                <p style={{ textAlign: "center", marginTop: 12 }}>Scholar Name</p>
+                <ScholarCard name="Scholar Name" imageUrl={scholarImageUrl} />
               </div>
             </div>
           </div>

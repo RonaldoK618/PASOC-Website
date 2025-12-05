@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import { Header } from './sections/Header';
-import { Footer } from './sections/Footer';
+import { Header } from './Frontend/Header';
+import { Footer } from './Frontend/Footer';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

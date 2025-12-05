@@ -2,7 +2,7 @@ import * as React from "react";
 
 export function SponsorSection() {
   const styles = {
-    section: { padding: "16px", paddingLeft: "6.75vw", paddingRight: "6.75vw", marginTop: 32, width: "100%", background: "#fff", borderRadius: 24, boxShadow: "0px 4px 4px rgba(0,0,0,0.25)", boxSizing: "border-box" },
+    section: { padding: "16px", marginTop: 32, width: "100%", maxWidth: 1350, background: "#fff", borderRadius: 24, boxShadow: "0px 4px 4px rgba(0,0,0,0.25)", boxSizing: "border-box", alignSelf: "center" },
     row: { display: "flex", gap: 16, flexWrap: "wrap" },
     leftCol: { flex: "0 0 18%", minWidth: 160 },
     leftInner: { display: "flex", flexDirection: "column", alignItems: "flex-start" },

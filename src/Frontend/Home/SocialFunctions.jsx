@@ -8,7 +8,7 @@ interface SocialFunctionItemProps {
 function SocialFunctionItem({ number, description }: SocialFunctionItemProps) {
   const styles = {
     root: { width: "100%", maxWidth: 976, color: "#27272a" },
-    row: { display: "flex", flexWrap: "wrap", gap: 16, alignItems: "flex-start", padding: "8px 12px 18px", borderBottom: "3px solid #27272a", borderRadius: 12 },
+    row: { display: "flex-row", gap: 16, alignItems: "flex-start", padding: "8px 12px 18px", borderBottom: "3px solid #27272a", borderRadius: 12 },
     badge: { display: "flex", alignItems: "center", justifyContent: "center", padding: 8, background: "#facc15", borderRadius: "9999px", border: "1px solid #27272a", width: 50, height: 50, boxSizing: "border-box" },
     desc: { flex: "1 1 100%", alignSelf: "center", minWidth: 200 },
   };
@@ -27,13 +27,13 @@ function SocialFunctionItem({ number, description }: SocialFunctionItemProps) {
 
 export function SocialFunctions() {
   const styles = {
-    section: { display: "flex", flexDirection: "column", alignItems: "flex-start", marginTop: 32, width: "100%", maxWidth: "100%", marginLeft: "auto", marginRight: "auto", paddingLeft: "6.75vw", paddingRight: "6.75vw" },
+    section: { display: "flex", flexDirection: "column", alignItems: "flex-start", width: "100%", marginLeft: "auto", marginRight: "auto", maxWidth: 1350 },
     intro: { fontSize: 20, color: "#000" },
-    heading: { marginTop: 28, marginLeft: 8, fontSize: 28, color: "#84A44D", textDecoration: "underline" },
-    contentRow: { display: "flex", flexWrap: "wrap", gap: 16, justifyContent: "space-between", marginTop: 16, width: "100%" },
+    heading: { marginTop: 28, marginLeft: 8, fontSize: 28, color: "#556B2F", textDecoration: "underline", fontFamily: "'Instrument Serif', serif", },
+    contentRow: { display: "flex", flexWrap: "wrap", gap: 16, justifyContent: "space-between", marginTop: 16, width: "100%", maxWidth: 750 },
     leftCol: { flex: "1 1 60%", minWidth: 280, fontSize: 20 },
     spacer: { marginTop: 48 },
-    infoBox: { padding: "12px", marginTop: 28, marginLeft: "auto", marginRight: "auto", borderBottom: "3px solid #000", borderRadius: 8, width: "100%", maxWidth: 1150, fontSize: 20, color: "#000" },
+    infoBox: { padding: "12px", marginTop: 28, marginLeft: "auto", marginRight: "auto", borderBottom: "3px solid #000", borderRadius: 8, width: "100%", maxWidth: 1350, fontSize: 20, color: "#000" },
   };
 
   return (

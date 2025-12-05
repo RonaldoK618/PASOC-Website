@@ -23,8 +23,8 @@ export function FloatingButton() {
       width: 55,
       height: 55,
       borderRadius: 9999,
-      background: "#84A44D",
-      border: "5px solid #525252",
+      background: "#556B2F",
+      border: "5px solid #84A44D",
       color: "#f8fafc",
     },
     text: {

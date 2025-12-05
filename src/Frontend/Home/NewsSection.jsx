@@ -2,7 +2,7 @@ import * as React from "react";
 
 export function NewsSection() {
   const styles = {
-    section: { padding: "0 6.75vw" },
+    section: { padding: "0 6.75vw ", maxWidth: 1350, marginLeft: "auto", marginRight: "auto" },
     titleBar: {
       display: "flex",
       gap: 16,
@@ -25,16 +25,16 @@ export function NewsSection() {
       borderBottom: "4px solid #000",
       borderRadius: 24,
       width: "100%",
-      maxWidth: 1120,
+      maxWidth: 1350,
       marginLeft: "auto",
       marginRight: "auto",
     },
     row: { display: "flex", gap: 16, flexWrap: "wrap" },
     content: { flex: 3, minWidth: 260 },
-    heading: { fontSize: 28, color: "#84A44D", textDecoration: "underline", margin: 0 },
+    heading: { fontSize: 28, color: "#556B2F", textDecoration: "underline", margin: 0, fontFamily: "'Instrument Serif', serif", },
     paragraph: { marginTop: 12, fontSize: 18, color: "#000", lineHeight: 1.5 },
     imageWrap: { flex: 1, minWidth: 200, display: "flex", justifyContent: "center", alignItems: "flex-start" },
-    image: { width: "100%", maxWidth: 335, height: "auto", objectFit: "contain", marginTop: 20 },
+    image: { width: "100%", maxWidth: 235, height: "auto", objectFit: "contain", marginTop: 20 },
   };
 
   return (

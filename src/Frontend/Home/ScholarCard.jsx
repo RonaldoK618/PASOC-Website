@@ -7,8 +7,8 @@ interface ScholarCardProps {
 
 export function ScholarCard({ name, imageUrl }: ScholarCardProps) {
   const styles = {
-    root: { display: "flex", flexDirection: "column", flex: "1 1 auto", padding: "20px", background: "#fff", alignItems: "center" },
-    img: { objectFit: "contain", width: 171, height: "auto" },
+    root: { display: "flex", flexDirection: "column", flex: "auto", padding: "20px", background: "#fff", alignItems: "center" },
+    img: { objectFit: "contain", width: 100, height: "auto" },
     name: { marginTop: 12 },
   };
 

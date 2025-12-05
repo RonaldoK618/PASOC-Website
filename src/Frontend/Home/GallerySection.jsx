@@ -29,9 +29,9 @@ function GalleryImage({ src, alt, title, date, aspectRatio }: GalleryImageProps)
 
 export function GallerySection() {
   const styles = {
-    section: { padding: "0 6.75vw" },
-    heading: { marginTop: 48, marginLeft: 12, fontSize: 28, color: "#84A44D", textDecoration: "underline" },
-    wrapper: { padding: "16px", marginTop: 16, width: "100%", borderRadius: 24, borderBottom: "3px solid #000", backgroundColor: "#556B2F", maxWidth: 1120, marginLeft: "auto", marginRight: "auto" },
+    section: { padding: "0 6.75vw", maxWidth: 1350, marginLeft: "auto", marginRight: "auto" },
+    heading: { marginTop: 48, marginLeft: 12, fontSize: 28, color: "#556B2F", textDecoration: "underline", fontFamily: "'Instrument Serif', serif", },
+    wrapper: { padding: "16px", marginTop: 16, width: "100%", borderRadius: 24, borderBottom: "3px solid #000", backgroundColor: "#84A44D", maxWidth: 1350, marginLeft: "auto", marginRight: "auto" },
     row: { display: "flex", gap: 16, flexWrap: "wrap" },
     col: { flex: "1 1 30%", minWidth: 220 },
   };
