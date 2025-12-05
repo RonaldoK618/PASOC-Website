@@ -16,6 +16,7 @@ export function Header() {
       padding: "24px 24px 0",
       backgroundColor: "#f5f5f4",
       boxShadow: "0px 6px 10px rgba(0,0,0,0.25)",
+      borderBottom: "4px solid #556B2F",
     },
     container: {
       width: "100%",
