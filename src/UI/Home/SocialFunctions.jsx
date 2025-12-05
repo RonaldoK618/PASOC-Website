@@ -39,7 +39,7 @@ export function SocialFunctions() {
   return (
     <section style={styles.section}>
       <p style={styles.intro}>
-        Take a glimse of what Pangasinenses here in Calgary have been doing,
+        Take a glimpse of what Pangasinenses here in Calgary have been doing,
         joining forces in reaching out to the less fortunate as well as
         embodied the strong family spirit through these functions.
       </p>

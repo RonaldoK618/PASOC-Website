@@ -9,7 +9,11 @@ import { NewsSection } from "./UI/Home/NewsSection";
 import { ScholarsSection } from "./UI/Home/ScholarsSection";
 import { GallerySection } from "./UI/Home/GallerySection";
 import { FloatingButton } from "./UI/FloatingButton";
+
+//pages
 import Donate from "./Pages/Donate";
+import Login from "./Pages/Login";
+import SignUp from "./Pages/SignUp"; // Import the SignUp component
 
 function Home() {
   return (
@@ -46,6 +50,12 @@ function App() {
 
       {/* Donate page route */}
       <Route path="/Pages/Donate" element={<Donate />} />
+      
+      {/* Login page route */}
+      <Route path="/Pages/Login" element={<Login />} />
+      
+      {/* SignUp page route */}
+      <Route path="/Pages/SignUp" element={<SignUp />} />
 
       {/* Add other routes as needed */}
     </Routes>
@@ -53,5 +63,3 @@ function App() {
 }
 
 export default App;
-
-

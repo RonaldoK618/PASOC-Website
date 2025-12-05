@@ -1,10 +1,11 @@
 "use client";
 import * as React from "react";
 import { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export function Header() {
   const [hoveredNav, setHoveredNav] = React.useState(null);
+  const navigate = useNavigate(); // Add this for programmatic navigation if needed
 
   const styles = {
     header: {
@@ -101,44 +102,19 @@ export function Header() {
     }),
   };
 
-  const handleDonateClick = (e) => {
-    e.preventDefault();
-    window.location.href = "/donate";
-  };
-
-  const handleLoginClick = (e) => {
-    e.preventDefault();
-    window.location.href = "/login";
-  };
-
-  const handleLogoClick = (e) => {
-    e.preventDefault();
-    window.location.href = "/";
-  };
-
-  const handleHomeClick = (e) => {
-    e.preventDefault();
-    window.location.href = "/";
-  };
-
-  const handleNavClick = (path) => (e) => {
-    e.preventDefault();
-    window.location.href = path;
-  };
-
   return (
     <header style={styles.header}>
       <div style={styles.container}>
         <div style={styles.topRow}>
           <div style={styles.brandRow}>
             <div style={{ width: "100%", maxWidth: 167 }}>
-              <a href="/" onClick={handleLogoClick} style={{ textDecoration: "none" }}>
+              <Link to="/" style={{ textDecoration: "none" }}>
                 <img
                   src="https://api.builder.io/api/v1/image/assets/TEMP/59857bbe636f97ab4cebcfbc3ad030ee40910eb4?placeholderIfAbsent=true&apiKey=fbbee8c7a138402fba2a2964fb2f753d"
                   alt="PASOC Logo"
                   style={styles.logo}
                 />
-              </a>
+              </Link>
             </div>
             <div style={{ marginLeft: 12 }}>
               <h1 style={styles.title}>Pangasinan Society of Calgary</h1>
@@ -154,9 +130,8 @@ export function Header() {
               />
               <span>Search PASOC</span>
             </div>
-            <a 
-              href="/login" 
-              onClick={handleLoginClick}
+            <Link 
+              to="/Pages/Login"  // Consistent with your App.js route
               style={styles.profileLink}
               title="Login"
               onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.1)"}
@@ -167,7 +142,7 @@ export function Header() {
                 alt="User profile"
                 style={styles.profile}
               />
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -209,7 +184,7 @@ export function Header() {
             About Us
           </div>
           <Link  
-            to="./Pages/Donate"
+            to="/Pages/Donate"  // Consistent with your App.js route
             style={styles.navItem(hoveredNav === "donate")}
             onMouseEnter={() => setHoveredNav("donate")}
             onMouseLeave={() => setHoveredNav(null)}
