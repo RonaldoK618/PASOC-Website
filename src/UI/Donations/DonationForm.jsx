@@ -132,7 +132,7 @@ export default function DonationForm() {
   const logoStyle = { width: "40px", height: "auto" };
 
   return (
-    <form onSubmit={handleSubmit} style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
+    <form onSubmit={handleSubmit} style={{ padding: "20px", maxWidth: "800px", margin: "0 auto", backgroundColor: "#f5f5f4", borderRadius: "8px", boxShadow: "0 0 10px rgba(0,0,0,0.1)" }}>
       <h2 style={{ color: "#556B2F" }}>Enter Your Donation</h2>
       <p>Choose from the pre-selected amount or enter the amount you would like to donate</p>
 
