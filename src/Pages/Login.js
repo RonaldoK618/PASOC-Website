@@ -1,20 +1,51 @@
 "use client";
 import * as React from "react";
 import { useState } from "react";
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import { Link, useNavigate } from 'react-router-dom';
+import { authAPI } from '../services/api'; // Import the API
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState(""); // Add this
+  const [loading, setLoading] = useState(false); // Add this
+  const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
+    
     console.log({ email, password, rememberMe });
+    
+    try {
+      // Call Flask API
+      const result = await authAPI.login(email, password);
+      
+      console.log('Login successful:', result);
+      
+      // Store token and user data
+      localStorage.setItem('token', result.token);
+      localStorage.setItem('user', JSON.stringify(result.user));
+      
+      if (rememberMe) {
+        localStorage.setItem('remember_me', 'true');
+      }
+      
+      // Redirect to donate page
+      navigate('/');
+    } catch (err) {
+      setError(err.message || 'Login failed. Please try again.');
+      console.error('Login error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const styles = {
     container: {
+      zIndex: 1,
       minHeight: "100vh",
       backgroundColor: "#F8F3EF",
       display: "flex",

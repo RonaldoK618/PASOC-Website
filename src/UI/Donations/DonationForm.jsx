@@ -32,6 +32,8 @@ export default function DonationForm() {
   });
 
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -93,17 +95,100 @@ export default function DonationForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   if (validate()) {
+  //     console.log("Form Data Object:", formData);
+  //     alert("Form submitted successfully! Check console for data.");
+  //   } else {
+  //     alert("Please fix the errors before submitting.");
+  //   }
+  // };
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validate()) {
-      console.log("Form Data Object:", formData);
-      alert("Form submitted successfully! Check console for data.");
-    } else {
-      alert("Please fix the errors before submitting.");
+    
+    if (!validate()) {
+      setMessage("Please fix the errors before submitting.");
+      return;
+    }
+
+    setLoading(true);
+    setMessage("");
+
+    // Prepare data for backend (minimal fields for donation)
+    const donationData = {
+      amount: parseFloat(formData.customDonation) || 0,
+      payment_method: formData.paymentMethod,
+      notes: `Donation from ${formData.firstname} ${formData.lastname}. Email: ${formData.email}`,
+      is_recurring: false,
+      // Include user info for guest donations
+      donor_info: {
+        firstname: formData.firstname,
+        lastname: formData.lastname,
+        email: formData.email,
+        phone: formData.cellNumber,
+        address: `${formData.address}, ${formData.city}, ${formData.province}, ${formData.country}, ${formData.postalCode}`
+      }
+    };
+
+    console.log("Sending to backend:", donationData);
+
+    try {
+      // Send to Flask backend
+      const response = await fetch('http://localhost:5000/api/donations/create-guest', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(donationData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setMessage("Thank you for your donation! Your contribution has been recorded and sent to your inbox.");
+        console.log("Donation submitted successfully:", result);
+        
+        // Optional: Clear form after successful submission
+        // setFormData({
+        //   customDonation: "",
+        //   firstname: "",
+        //   lastname: "",
+        //   email: "",
+        //   nameOnCard: "",
+        //   cardNumber: "",
+        //   expDate: "",
+        //   cvv: "",
+        //   billingFirstName: "",
+        //   billingLastName: "",
+        //   address: "",
+        //   city: "",
+        //   postalCode: "",
+        //   province: "",
+        //   country: "",
+        //   cellNumber: "",
+        //   paymentMethod: "paypal"
+        // });
+      } else {
+        setMessage(result.error || "Donation failed. Please try again.");
+      }
+    } catch (error) {
+      setMessage("Network error. Please check if the server is running.");
+      console.error("Donation error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const inputStyle = { padding: "8px", fontSize: "16px", width: "100%", boxSizing: "border-box" };
+
+  const inputStyle = { 
+    padding: "8px", 
+    fontSize: "16px", 
+    width: "100%", 
+    boxSizing: "border-box",
+    opacity: loading ? 0.7 : 1,
+    pointerEvents: loading ? 'none' : 'auto'
+  };
 
   const rowStyle = { display: "flex", gap: "10px", marginTop: "12px" };
   const halfStyle = { flex: 1, minWidth: 0 };
@@ -124,17 +209,62 @@ export default function DonationForm() {
     gap: "10px",
     padding: "8px 12px",
     borderRadius: "6px",
-    cursor: "pointer",
+    cursor: loading ? 'not-allowed' : 'pointer',
     border: selected ? "2px solid #556B2F" : "1px solid #ccc",
-    backgroundColor: selected ? "#E6F0D4" : "transparent"
+    backgroundColor: selected ? "#E6F0D4" : "transparent",
+    opacity: loading ? 0.7 : 1,
+    pointerEvents: loading ? 'none' : 'auto'
   });
 
   const logoStyle = { width: "40px", height: "auto" };
 
-  return (
-    <form onSubmit={handleSubmit} style={{ padding: "20px", maxWidth: "800px", margin: "0 auto", backgroundColor: "#f5f5f4", borderRadius: "8px", boxShadow: "0 0 10px rgba(0,0,0,0.1)" }}>
+  const buttonStyle = {
+    fontSize: "20px", 
+    padding: "12px 20px",
+    backgroundColor: "#6B9B3A",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    opacity: loading ? 0.7 : 1,
+    pointerEvents: loading ? 'none' : 'auto'
+  };
+
+  const submitButtonStyle = {
+    marginTop: "10px", 
+    padding: "10px 20px", 
+    fontSize: "16px",
+    backgroundColor: loading ? "#7A8F58" : "#4A6F28",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    cursor: loading ? "not-allowed" : "pointer",
+    opacity: loading ? 0.7 : 1,
+    pointerEvents: loading ? 'none' : 'auto',
+    width: "100%"
+  };
+
+  const messageStyle = {
+    padding: "10px",
+    margin: "10px 0",
+    borderRadius: "4px",
+    textAlign: "center",
+    backgroundColor: message.includes("Thank") ? "#D1FAE5" : "#FEE2E2",
+    color: message.includes("Thank") ? "#065F46" : "#DC2626",
+    border: message.includes("Thank") ? "1px solid #A7F3D0" : "1px solid #FCA5A5"
+  };
+
+return (
+    <form onSubmit={handleSubmit} style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
       <h2 style={{ color: "#556B2F" }}>Enter Your Donation</h2>
       <p>Choose from the pre-selected amount or enter the amount you would like to donate</p>
+
+      {/* Message Display */}
+      {message && (
+        <div style={messageStyle}>
+          {message}
+        </div>
+      )}
 
       <div style={{ display: "flex", gap: "10px", justifyContent: "center", marginTop: "10px" }}>
         {donationAmounts.map((amount) => (
@@ -142,7 +272,8 @@ export default function DonationForm() {
             key={amount}
             type="button"
             onClick={() => setFormData((prev) => ({ ...prev, customDonation: amount }))}
-            style={{ fontSize: "20px", padding: "12px 20px" }}
+            style={buttonStyle}
+            disabled={loading}
           >
             ${amount}
           </button>
@@ -159,6 +290,8 @@ export default function DonationForm() {
           value={formData.customDonation}
           onChange={handleChange}
           placeholder="0"
+          disabled={loading}
+          required
         />
         <p>.00</p>
       </div>
@@ -171,12 +304,12 @@ export default function DonationForm() {
             <div
               key={id}
               style={paymentOptionStyle(selected)}
-              onClick={() => handlePaymentMethodChange(id)}
+              onClick={() => !loading && handlePaymentMethodChange(id)}
               role="radio"
               aria-checked={selected}
               tabIndex={0}
               onKeyDown={(e) => {
-                if (e.key === " " || e.key === "Enter") {
+                if (!loading && (e.key === " " || e.key === "Enter")) {
                   e.preventDefault();
                   handlePaymentMethodChange(id);
                 }
@@ -187,8 +320,9 @@ export default function DonationForm() {
                 id={id}
                 name="paymentMethod"
                 checked={selected}
-                onChange={() => handlePaymentMethodChange(id)}
+                onChange={() => !loading && handlePaymentMethodChange(id)}
                 style={{ cursor: "pointer" }}
+                disabled={loading}
               />
               <label htmlFor={id} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "10px", margin: 0 }}>
                 <img src={logo} alt={label} style={logoStyle} /> {label}
@@ -210,6 +344,8 @@ export default function DonationForm() {
               value={formData.firstname}
               onChange={handleChange}
               placeholder="First Name"
+              disabled={loading}
+              required
             />
             {errors.firstname && <span style={{ color: "red" }}>{errors.firstname}</span>}
           </div>
@@ -221,6 +357,8 @@ export default function DonationForm() {
               value={formData.lastname}
               onChange={handleChange}
               placeholder="Last Name"
+              disabled={loading}
+              required
             />
             {errors.lastname && <span style={{ color: "red" }}>{errors.lastname}</span>}
           </div>
@@ -234,6 +372,8 @@ export default function DonationForm() {
           value={formData.email}
           onChange={handleChange}
           placeholder="Email Address"
+          disabled={loading}
+          required
         />
         {errors.email && <span style={{ color: "red" }}>{errors.email}</span>}
       </div>
@@ -248,6 +388,8 @@ export default function DonationForm() {
           value={formData.nameOnCard}
           onChange={handleChange}
           placeholder="Name"
+          disabled={loading}
+          required
         />
         {errors.nameOnCard && <span style={{ color: "red" }}>{errors.nameOnCard}</span>}
 
@@ -259,6 +401,8 @@ export default function DonationForm() {
           value={formData.cardNumber}
           onChange={handleChange}
           placeholder="xxxx xxxx xxxx xxxx"
+          disabled={loading}
+          required
         />
         {errors.cardNumber && <span style={{ color: "red" }}>{errors.cardNumber}</span>}
 
@@ -272,6 +416,8 @@ export default function DonationForm() {
               value={formData.expDate}
               onChange={handleChange}
               placeholder="MM/YY"
+              disabled={loading}
+              required
             />
             {errors.expDate && <span style={{ color: "red" }}>{errors.expDate}</span>}
           </div>
@@ -284,6 +430,8 @@ export default function DonationForm() {
               value={formData.cvv}
               onChange={handleChange}
               placeholder="XXX"
+              disabled={loading}
+              required
             />
             {errors.cvv && <span style={{ color: "red" }}>{errors.cvv}</span>}
           </div>
@@ -302,6 +450,8 @@ export default function DonationForm() {
               value={formData.billingFirstName}
               onChange={handleChange}
               placeholder="First Name"
+              disabled={loading}
+              required
             />
             {errors.billingFirstName && <span style={{ color: "red" }}>{errors.billingFirstName}</span>}
           </div>
@@ -313,6 +463,8 @@ export default function DonationForm() {
               value={formData.billingLastName}
               onChange={handleChange}
               placeholder="Last Name"
+              disabled={loading}
+              required
             />
             {errors.billingLastName && <span style={{ color: "red" }}>{errors.billingLastName}</span>}
           </div>
@@ -326,6 +478,8 @@ export default function DonationForm() {
           value={formData.address}
           onChange={handleChange}
           placeholder="Street Address"
+          disabled={loading}
+          required
         />
         {errors.address && <span style={{ color: "red" }}>{errors.address}</span>}
 
@@ -338,6 +492,8 @@ export default function DonationForm() {
               value={formData.city}
               onChange={handleChange}
               placeholder="City"
+              disabled={loading}
+              required
             />
             {errors.city && <span style={{ color: "red" }}>{errors.city}</span>}
           </div>
@@ -349,6 +505,8 @@ export default function DonationForm() {
               value={formData.postalCode}
               onChange={handleChange}
               placeholder="Postal Code"
+              disabled={loading}
+              required
             />
             {errors.postalCode && <span style={{ color: "red" }}>{errors.postalCode}</span>}
           </div>
@@ -363,6 +521,8 @@ export default function DonationForm() {
               value={formData.province}
               onChange={handleChange}
               placeholder="Province"
+              disabled={loading}
+              required
             />
             {errors.province && <span style={{ color: "red" }}>{errors.province}</span>}
           </div>
@@ -374,6 +534,8 @@ export default function DonationForm() {
               value={formData.country}
               onChange={handleChange}
               placeholder="Country"
+              disabled={loading}
+              required
             />
             {errors.country && <span style={{ color: "red" }}>{errors.country}</span>}
           </div>
@@ -387,6 +549,8 @@ export default function DonationForm() {
           value={formData.cellNumber}
           onChange={handleChange}
           placeholder="1234567890"
+          disabled={loading}
+          required
         />
         {errors.cellNumber && <span style={{ color: "red" }}>{errors.cellNumber}</span>}
       </div>
@@ -396,9 +560,10 @@ export default function DonationForm() {
       </p>
       <button
         type="submit"
-        style={{ marginTop: "10px", padding: "10px 20px", fontSize: "16px" }}
+        style={submitButtonStyle}
+        disabled={loading || !formData.customDonation}
       >
-        Donate
+        {loading ? "Processing..." : "Donate"}
       </button>
     </form>
   );

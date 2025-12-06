@@ -1,7 +1,8 @@
 "use client";
+import * as React from "react";
 import { useState } from "react";
-import { Link } from 'react-router-dom';
-
+import { Link, useNavigate } from 'react-router-dom';
+import { authAPI, membersAPI } from '../services/api';
 
 function SignUp() {
   const [hasChildren, setHasChildren] = useState(false);
@@ -10,6 +11,10 @@ function SignUp() {
   const [numChildren, setNumChildren] = useState(0);
   const [adultsCount, setAdultsCount] = useState(1);
   const [dependantsCount, setDependantsCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const navigate = useNavigate();
 
   // Form data states
   const [formData, setFormData] = useState({
@@ -21,10 +26,105 @@ function SignUp() {
     city: "",
     postalCode: "",
     cellNumber: "",
-    email: ""
+    email: "",
+    password: "",
+    confirmPassword: ""
   });
 
-  // Define styles
+  // Child data array
+  const [childrenData, setChildrenData] = useState([]);
+
+  // SINGLE handleAddChild function
+  const handleAddChild = () => {
+    setChildrenData([
+      ...childrenData,
+      { firstName: "", lastName: "", preferredName: "", birthday: "" }
+    ]);
+    setNumChildren(numChildren + 1);
+  };
+
+  const handleChildChange = (index, field, value) => {
+    const updatedChildren = [...childrenData];
+    updatedChildren[index][field] = value;
+    setChildrenData(updatedChildren);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    setLoading(true);
+
+    // Validate passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
+    }
+    
+    // Calculate total
+    const totalAmount = (adultsCount * 5.00) + (dependantsCount * 2.50);
+
+    try {
+      // Step 1: Register user
+      const registerResult = await authAPI.register({
+        email: formData.email,
+        password: formData.password,
+        confirm_password: formData.confirmPassword,
+        full_name: `${formData.firstName} ${formData.lastName}`.trim()
+      });
+
+      // Store token from registration
+      localStorage.setItem('token', registerResult.token);
+      localStorage.setItem('user', JSON.stringify(registerResult.user));
+
+      // Step 2: Complete registration with additional details
+      const registrationData = {
+        preferredName: formData.preferredName,
+        birthday: formData.birthday,
+        street: formData.street,
+        city: formData.city,
+        postalCode: formData.postalCode,
+        cellNumber: formData.cellNumber,
+        hasChildren: hasChildren,
+        emailNotifications: emailNotifications,
+        payment: {
+          adultsCount: adultsCount,
+          youthCount: dependantsCount,
+          totalAmount: totalAmount,
+          paymentMethod: paymentMethod
+        },
+        children: childrenData
+      };
+
+      const completeResult = await membersAPI.completeRegistration(registrationData);
+
+      setSuccess("Registration successful!");
+      
+      // Redirect
+      setTimeout(() => {
+        navigate('/');
+      }, 3000);
+
+    } catch (err) {
+      setError(err.message || 'Registration failed. Please try again.');
+      console.error('Registration error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Calculate total
+  const totalAmount = (adultsCount * 5.00) + (dependantsCount * 2.50);
+
   const styles = {
     container: {
       backgroundColor: "#F8F3EF",
@@ -165,16 +265,17 @@ function SignUp() {
       marginRight: "10px"
     },
     submitButton: {
-      backgroundColor: "#4A6F28",
+      backgroundColor: loading ? "#7A8F58" : "#4A6F28",
       color: "#FFFFFF",
       padding: "12px 30px",
       fontSize: "16px",
       fontWeight: "bold",
       border: "none",
       borderRadius: "4px",
-      cursor: "pointer",
+      cursor: loading ? "not-allowed" : "pointer",
       margin: "20px auto",
-      display: "block"
+      display: "block",
+      opacity: loading ? 0.7 : 1
     },
     loginLink: {
       textAlign: "center",
@@ -216,37 +317,25 @@ function SignUp() {
       fontWeight: "bold",
       color: "#000000",
       marginBottom: "15px"
+    },
+    messageBox: {
+      padding: "15px",
+      margin: "20px 0",
+      borderRadius: "4px",
+      textAlign: "center",
+      fontSize: "16px"
+    },
+    errorBox: {
+      backgroundColor: "#FEE2E2",
+      color: "#DC2626",
+      border: "1px solid #FCA5A5"
+    },
+    successBox: {
+      backgroundColor: "#D1FAE5",
+      color: "#065F46",
+      border: "1px solid #A7F3D0"
     }
   };
-
-  const handleAddChild = () => {
-    setNumChildren(numChildren + 1);
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Form submitted:", {
-      ...formData,
-      hasChildren,
-      emailNotifications,
-      paymentMethod,
-      adultsCount,
-      dependantsCount,
-      total: (adultsCount * 5.00) + (dependantsCount * 2.50)
-    });
-    // Handle form submission here
-  };
-
-  // Calculate total
-  const totalAmount = (adultsCount * 5.00) + (dependantsCount * 2.50);
 
   return (
     <div style={styles.container}>
@@ -256,6 +345,18 @@ function SignUp() {
           <h2 style={styles.title}>MEMBERSHIP REGISTRATION</h2>
           <p style={styles.subtitle}>One time membership fee of: Adult: $5.00 Youth: $2.50</p>
         </div>
+
+        {/* Messages */}
+        {error && (
+          <div style={{ ...styles.messageBox, ...styles.errorBox }}>
+            {error}
+          </div>
+        )}
+        {success && (
+          <div style={{ ...styles.messageBox, ...styles.successBox }}>
+            {success}
+          </div>
+        )}
 
         {/* Form Container */}
         <form onSubmit={handleSubmit}>
@@ -273,6 +374,8 @@ function SignUp() {
                   value={formData.firstName}
                   onChange={handleInputChange}
                   style={styles.input}
+                  required
+                  disabled={loading}
                 />
               </div>
               <div>
@@ -284,6 +387,8 @@ function SignUp() {
                   value={formData.lastName}
                   onChange={handleInputChange}
                   style={styles.input}
+                  required
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -297,18 +402,19 @@ function SignUp() {
                 value={formData.preferredName}
                 onChange={handleInputChange}
                 style={styles.input}
+                disabled={loading}
               />
             </div>
 
             <div>
               <label style={styles.label}>Birthday</label>
               <input
-                type="text"
+                type="date"
                 name="birthday"
-                placeholder="MM/DD/YYYY"
                 value={formData.birthday}
                 onChange={handleInputChange}
                 style={styles.input}
+                disabled={loading}
               />
             </div>
 
@@ -322,6 +428,8 @@ function SignUp() {
                 value={formData.street}
                 onChange={handleInputChange}
                 style={styles.input}
+                required
+                disabled={loading}
               />
               <div style={styles.twoColumnGrid}>
                 <input
@@ -331,6 +439,8 @@ function SignUp() {
                   value={formData.city}
                   onChange={handleInputChange}
                   style={styles.input}
+                  required
+                  disabled={loading}
                 />
                 <input
                   type="text"
@@ -339,6 +449,8 @@ function SignUp() {
                   value={formData.postalCode}
                   onChange={handleInputChange}
                   style={styles.input}
+                  required
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -354,6 +466,8 @@ function SignUp() {
                   value={formData.cellNumber}
                   onChange={handleInputChange}
                   style={styles.input}
+                  required
+                  disabled={loading}
                 />
               </div>
               <div>
@@ -365,6 +479,42 @@ function SignUp() {
                   value={formData.email}
                   onChange={handleInputChange}
                   style={styles.input}
+                  required
+                  disabled={loading}
+                />
+              </div>
+            </div>
+
+            {/* Password Fields */}
+            <div style={styles.twoColumnGrid}>
+              <div>
+                <label style={styles.label}>Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Create password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  style={styles.input}
+                  required
+                  minLength="8"
+                  disabled={loading}
+                />
+                <small style={{ color: "#666", fontSize: "12px" }}>
+                  Minimum 8 characters
+                </small>
+              </div>
+              <div>
+                <label style={styles.label}>Confirm Password</label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  placeholder="Confirm password"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  style={styles.input}
+                  required
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -387,6 +537,7 @@ function SignUp() {
                     checked={hasChildren}
                     onChange={() => setHasChildren(true)}
                     style={{ display: "none" }}
+                    disabled={loading}
                   />
                 </label>
                 <label style={styles.radioLabel}>
@@ -401,6 +552,7 @@ function SignUp() {
                     checked={!hasChildren}
                     onChange={() => setHasChildren(false)}
                     style={{ display: "none" }}
+                    disabled={loading}
                   />
                 </label>
               </div>
@@ -410,7 +562,7 @@ function SignUp() {
               <div>
                 <h3 style={{...styles.sectionTitle, fontSize: "20px", marginBottom: "15px"}}>Dependant(s) if applicable</h3>
 
-                {Array.from({ length: numChildren }).map((_, index) => (
+                {childrenData.map((child, index) => (
                   <div key={index} style={styles.childSection}>
                     <h4 style={styles.childTitle}>Child {index + 1}</h4>
                     <div style={styles.twoColumnGrid}>
@@ -419,7 +571,10 @@ function SignUp() {
                         <input
                           type="text"
                           placeholder="First"
+                          value={child.firstName}
+                          onChange={(e) => handleChildChange(index, 'firstName', e.target.value)}
                           style={styles.input}
+                          disabled={loading}
                         />
                       </div>
                       <div>
@@ -427,7 +582,10 @@ function SignUp() {
                         <input
                           type="text"
                           placeholder="Last"
+                          value={child.lastName}
+                          onChange={(e) => handleChildChange(index, 'lastName', e.target.value)}
                           style={styles.input}
+                          disabled={loading}
                         />
                       </div>
                     </div>
@@ -437,16 +595,21 @@ function SignUp() {
                       <input
                         type="text"
                         placeholder="if applicable"
+                        value={child.preferredName}
+                        onChange={(e) => handleChildChange(index, 'preferredName', e.target.value)}
                         style={styles.input}
+                        disabled={loading}
                       />
                     </div>
 
                     <div>
                       <label style={styles.label}>Birthday</label>
                       <input
-                        type="text"
-                        placeholder="MM/DD/YYYY"
+                        type="date"
+                        value={child.birthday}
+                        onChange={(e) => handleChildChange(index, 'birthday', e.target.value)}
                         style={styles.input}
+                        disabled={loading}
                       />
                     </div>
                   </div>
@@ -456,6 +619,7 @@ function SignUp() {
                   type="button"
                   onClick={handleAddChild}
                   style={styles.addChildButton}
+                  disabled={loading}
                 >
                   Add more children
                 </button>
@@ -504,6 +668,7 @@ function SignUp() {
                     checked={emailNotifications}
                     onChange={() => setEmailNotifications(true)}
                     style={{ display: "none" }}
+                    disabled={loading}
                   />
                 </label>
                 <label style={styles.radioLabel}>
@@ -518,6 +683,7 @@ function SignUp() {
                     checked={!emailNotifications}
                     onChange={() => setEmailNotifications(false)}
                     style={{ display: "none" }}
+                    disabled={loading}
                   />
                 </label>
               </div>
@@ -543,14 +709,14 @@ function SignUp() {
                     checked={paymentMethod === method.id}
                     onChange={() => setPaymentMethod(method.id)}
                     style={styles.paymentMethodRadio}
+                    disabled={loading}
                   />
                   <span style={{ color: "#000000", fontSize: "16px" }}>{method.label}</span>
                 </label>
               ))}
             </div>
           </div>
-
-          {/* Card Details Section */}
+{/* Card Details Section */}
           <div style={styles.formSection}>
             <h3 style={styles.sectionTitle}>Card Details</h3>
 
@@ -676,6 +842,7 @@ function SignUp() {
                     value={adultsCount}
                     onChange={(e) => setAdultsCount(parseInt(e.target.value))}
                     style={styles.select}
+                    disabled={loading}
                   >
                     {[0, 1, 2, 3, 4, 5].map(num => (
                       <option key={`adult-${num}`} value={num}>{num}</option>
@@ -692,6 +859,7 @@ function SignUp() {
                     value={dependantsCount}
                     onChange={(e) => setDependantsCount(parseInt(e.target.value))}
                     style={styles.select}
+                    disabled={loading}
                   >
                     {[0, 1, 2, 3, 4, 5].map(num => (
                       <option key={`youth-${num}`} value={num}>{num}</option>
@@ -733,8 +901,9 @@ function SignUp() {
           <button
             type="submit"
             style={styles.submitButton}
+            disabled={loading}
           >
-            Pay & Submit Registration
+            {loading ? "Processing..." : "Pay & Submit Registration"}
           </button>
 
           {/* Login Prompt */}
