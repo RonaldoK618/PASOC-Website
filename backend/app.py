@@ -62,8 +62,8 @@ if __name__ == '__main__':
         print(f"⚠️  Database setup warning: {e}")
     
     # Run Flask app
-    print("🚀 Starting Flask server on http://127.0.0.1:5000")
-    print("📚 API Documentation:")
+    print(" Starting Flask server on http://127.0.0.1:5000")
+    print(" API Documentation:")
     print("   • POST   /api/auth/register     - Register new user")
     print("   • POST   /api/auth/login        - Login user")
     print("   • POST   /api/auth/verify       - Verify token")

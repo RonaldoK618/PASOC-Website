@@ -45,6 +45,7 @@ function Login() {
 
   const styles = {
     container: {
+      zIndex: 1,
       minHeight: "100vh",
       backgroundColor: "#F8F3EF",
       display: "flex",
