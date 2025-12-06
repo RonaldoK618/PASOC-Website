@@ -146,7 +146,7 @@ export default function DonationForm() {
       const result = await response.json();
 
       if (response.ok) {
-        setMessage("Thank you for your donation! Your contribution has been recorded.");
+        setMessage("Thank you for your donation! Your contribution has been recorded and sent to your inbox.");
         console.log("Donation submitted successfully:", result);
         
         // Optional: Clear form after successful submission

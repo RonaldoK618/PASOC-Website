@@ -3,6 +3,7 @@ import * as React from "react";
 export function HeroSection() {
   const styles = {
     section: {
+      zIndex: 0,
       position: "relative",
       display: "flex",
       flexDirection: "column",

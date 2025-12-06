@@ -107,12 +107,12 @@ function SignUp() {
 
       const completeResult = await membersAPI.completeRegistration(registrationData);
 
-      setSuccess("Registration successful! You can now make donations.");
+      setSuccess("Registration successful!");
       
-      // Redirect after 2 seconds
+      // Redirect
       setTimeout(() => {
-        navigate('/donate');
-      }, 2000);
+        navigate('/');
+      }, 3000);
 
     } catch (err) {
       setError(err.message || 'Registration failed. Please try again.');

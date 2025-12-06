@@ -34,7 +34,7 @@ function Login() {
       }
       
       // Redirect to donate page
-      navigate('/donate');
+      navigate('/');
     } catch (err) {
       setError(err.message || 'Login failed. Please try again.');
       console.error('Login error:', err);
